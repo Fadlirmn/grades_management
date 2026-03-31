@@ -29,3 +29,10 @@ func (s *ProgressService) UpdateProgress(id int,Progress models.Progress)  error
 func (s *ProgressService) DeleteProgress(id int) error {
 	return s.progressRepo.DeleteProgress(id)
 }
+
+func (s *ProgressService)AnalyzeAiProgress(progress models.Progress)  {
+	
+}
+func (s *ProgressService)FindAnalysisByStudentId(id_assignment int,progress models.Progress)  {
+	
+}

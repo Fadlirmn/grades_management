@@ -13,6 +13,7 @@ type ProgressRepository interface {
 	SaveProgress(Progress models.Progress)
 	UpdateProgress(id int, Progress models.Progress) error
 	DeleteProgress(id int) error
+	FindAnalysisByStudentId(studentId int)([]models.Progress,error)
 }
 
 type ProgressRepo struct {
@@ -52,4 +53,14 @@ func (r *ProgressRepo) UpdateProgress(progressId int, progress models.Progress) 
 func (r *ProgressRepo) DeleteProgress(progressId int) error {
 	_, err := r.db.Exec("DELETE FROM progresss WHERE id=$1", progressId)
 	return err
+}
+
+
+func (r *ProgressRepo)FindAnalysisByStudentId(studentId int)([]models.Progress,error)  {
+	var progress []models.Progress
+	err := r.db.Select(&progress,"SELECT * FROM grades WHERE student_id=$1",studentId)
+	if err != nil {
+		log.Printf("error query",err)
+	}
+	return progress,nil
 }
