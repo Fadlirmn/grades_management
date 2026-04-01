@@ -3,14 +3,15 @@ package repository
 import (
 	"grades-management/models"
 	"log"
+	
 
-	"github.com/jmoiron/sqlx"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jmoiron/sqlx"
 )
 
 type AssignmentRepository interface {
 	FindAllAssignment() []models.Assignment
-	SaveAssignment(Assignment models.Assignment)
+	SaveAssignment(assignment models.Assignment) error
 	UpdateAssignment(id int, Assignment models.Assignment) error
 	DeleteAssignment(id int) error
 }
@@ -34,14 +35,15 @@ func (r *AssignmentRepo) FindAllAssignment() []models.Assignment {
 	return assignments
 }
 
-func (r *AssignmentRepo) SaveAssignment(assignment models.Assignment) {
+func (r *AssignmentRepo) SaveAssignment(assignment models.Assignment)error {
 	_, err := r.db.NamedExec(
-		`INSERT INTO assignments(name_assignment,assignment_code) VALUES (:name_assignment,:assignment_code)`,
+		`INSERT INTO assignments(name_assignment,assignment_code,deadline,update_at) VALUES (:name_assignment,:assignment_code,:deadline,:update_at)`,
 		assignment,
 	)
 	if err != nil {
 		log.Println("fail Add Assignment", err)
 	}
+	return err
 }
 
 func (r *AssignmentRepo) UpdateAssignment(assignmentId int, assignment models.Assignment) error {

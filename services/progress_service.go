@@ -1,8 +1,9 @@
 package services
 
-import(
+import (
 	"grades-management/models"
 	"grades-management/repository"
+	"log"
 )
 
 type ProgressService struct{
@@ -30,9 +31,16 @@ func (s *ProgressService) DeleteProgress(id int) error {
 	return s.progressRepo.DeleteProgress(id)
 }
 
-func (s *ProgressService)AnalyzeAiProgress(progress models.Progress)  {
+func (s *ProgressService)FindAnalysisByStudentId(studentId int) ([] models.Progress,error) {
+	result, err:= s.progressRepo.FindAnalysisByStudentId(studentId)
+	if err != nil {
+		log.Printf("Failed fetch data for id %d: %v", studentId, err)
+		return nil, err
+	}
 	
-}
-func (s *ProgressService)FindAnalysisByStudentId(id_assignment int,progress models.Progress)  {
-	
+	if len(result)==0{
+		log.Printf("recommendation not found, for ID %d",studentId)
+		return nil,nil
+	}
+	return result,nil
 }

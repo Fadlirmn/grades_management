@@ -1,8 +1,10 @@
 package services
 
-import(
+import (
+	"fmt"
 	"grades-management/models"
 	"grades-management/repository"
+	"time"
 )
 
 type AssignService struct{
@@ -19,12 +21,27 @@ func (s *AssignService) GetAssignments()([]models.Assignment)  {
 	return s.assignRepo.FindAllAssignment()
 }
 
-func (s *AssignService) CreateAssignment(Assignment models.Assignment)  {
-		s.assignRepo.SaveAssignment(Assignment)
+func (s *AssignService) CreateAssignment(assignment models.Assignment)  {
+	assignment.UpdateAt = time.Now().UTC()
+
+	err := s.assignRepo.SaveAssignment(assignment)
+	if err != nil {
+		fmt.Printf("Failed Save Assignment")
+		return
+	}
+	fmt.Println("Successs Save Assignment")
 }
 
-func (s *AssignService) UpdateAssignment(id int,Assignment models.Assignment)  error{
-	return s.assignRepo.UpdateAssignment(id, Assignment)
+func (s *AssignService) UpdateAssignment(id int,assignment models.Assignment)  error{
+	assignment.UpdateAt = time.Now().UTC()
+
+	err := s.assignRepo.UpdateAssignment(id,assignment)
+	if err != nil {
+		fmt.Printf("Failed update Assignment")
+		
+	}
+	fmt.Println("Successs update Assignment")
+	return err
 }
 func (s *AssignService) DeleteAssignment(id int) error {
 	return s.assignRepo.DeleteAssignment(id)

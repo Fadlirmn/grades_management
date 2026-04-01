@@ -14,7 +14,7 @@ func main()  {
 	r:= gin.Default()
 
 	db:=config.ConnectDb()
-	api:=config.Apikey
+	Aikey:=config.Apikey
 	
 
 	assignRepo:= repository.NewAssignmentRepository(db)
@@ -24,5 +24,24 @@ func main()  {
 	studentRepo:= repository.NewStudentRepository(db)
 	subjectRepo:= repository.NewSubjectRepository(db)
 	
-	
+	assignService:= services.NewAssignService(assignRepo)
+	objectiveService:= services.NewObjectiveService(objectiveRepo)
+	progressService:= services.NewProgressService(progressRepo)
+	scoreService:= services.NewScoresService(scoreRepo)
+	studentService:= services.NewStudentService(studentRepo)
+	subjectService:= services.NewSubjectService(subjectRepo)
+
+	assignHandler := handlers.NewAssignmentHandler(assignService)
+	objectiveHandler := handlers.NewObjectiveHandler(objectiveService)
+	progressHandler := handlers.NewProgressHandler(progressService)
+	scoreHandler := handlers.NewScoreHandler(scoreService)
+	studentHandler := handlers.NewStudentHandler(studentService)
+	subjectHandler := handlers.NewSubjectsHandler(subjectService)
+
+
+	api:= r.Group("/api")
+	{
+		
+	}
+
 }

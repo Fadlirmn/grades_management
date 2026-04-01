@@ -60,7 +60,7 @@ func (r *ProgressRepo)FindAnalysisByStudentId(studentId int)([]models.Progress,e
 	var progress []models.Progress
 	err := r.db.Select(&progress,"SELECT * FROM grades WHERE student_id=$1",studentId)
 	if err != nil {
-		log.Printf("error query",err)
+		log.Printf("error query")
 	}
 	return progress,nil
 }
