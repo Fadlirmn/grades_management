@@ -19,9 +19,14 @@ func NewAssignmentHandler(s *services.AssignService) *AssignmentHandler {
 }
 
 func (h *AssignmentHandler) GetAssignments(c *gin.Context) {
-	var assignment models.Assignment
-	
-	c.JSON(http.StatusOK, assignment)
+	assign:= h.service.GetAssignments()
+
+	if assign == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messege":"data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, assign)
 }
 func (h *AssignmentHandler) CreateAssignment(c *gin.Context) {
 	var assignment models.Assignment

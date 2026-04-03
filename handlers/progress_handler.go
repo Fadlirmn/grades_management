@@ -1,27 +1,38 @@
 package handlers
 
 import (
+	"context"
 	"grades-management/models"
 	"grades-management/services"
+
+	"grades-management/worker"
 	"net/http"
 	"strconv"
-	
 
 	"github.com/gin-gonic/gin"
 )
 
 type ProgressHandler struct {
 	service *services.ProgressService
+	GeminiWorker *worker.GeminiWorker
 }
 
-func NewProgressHandler(s *services.ProgressService) *ProgressHandler {
-	return &ProgressHandler{service: s}
+func NewProgressHandler(s *services.ProgressService, w *worker.GeminiWorker) *ProgressHandler {
+	return &ProgressHandler{
+		service: s,
+		GeminiWorker: w,
+	}
 }
 
 func (h *ProgressHandler) GetProgresss(c *gin.Context) {
-	var assignment models.Progress
-	
-	c.JSON(http.StatusOK, assignment)
+		progress:= h.service.GetProgress()
+
+	if progress == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messege":"data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, progress)
 }
 func (h *ProgressHandler) CreateProgress(c *gin.Context) {
 	var assignment models.Progress
@@ -108,4 +119,26 @@ func (h *ProgressHandler) DeleteProgress(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"success": "Progress has been deleted",
 	})
+}
+
+func (h *ProgressHandler) TriggerAnalyis(c *gin.Context){
+	idStr := c.DefaultQuery("student_id", "0")
+    studentID, _ := strconv.Atoi(idStr)
+
+    // Panggil service
+    pending, err := h.service.GetPendingAnalysis(studentID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError,gin.H{
+			"message":err.Error(),
+		})
+		return
+	}
+
+	if len(pending)>0 {
+		go h.GeminiWorker.ProcessBatchWithGemini(context.Background(),pending)
+		c.JSON(http.StatusOK,gin.H{"message":"Starting Analyze "+strconv.Itoa(len(pending))+" baris"})
+		return
+	}
+	
+	c.JSON(http.StatusOK,gin.H{"message":"Nothing to analyze"})
 }

@@ -25,7 +25,7 @@ func NewObjectiveRepository(db *sqlx.DB) ObjectiveRepository {
 
 func (r *ObjectiveRepo) FindAllObjective() []models.Objective {
 	var objectives []models.Objective
-	 err := r.db.Select(&objectives,"SELECT * FROM objectives")
+	 err := r.db.Select(&objectives,"SELECT subject_id,week,description FROM objectives")
 
 	if err != nil {
 		log.Println("error query", err)

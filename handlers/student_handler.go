@@ -19,9 +19,14 @@ func NewStudentHandler(s *services.StudentService) *StudentHandler {
 }
 
 func (h *StudentHandler) GetStudents(c *gin.Context) {
-	var assignment models.Student
-	
-	c.JSON(http.StatusOK, assignment)
+	student:= h.service.GetStudent()
+
+	if student == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messege":"data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, student)
 }
 func (h *StudentHandler) CreateStudent(c *gin.Context) {
 	var assignment models.Student

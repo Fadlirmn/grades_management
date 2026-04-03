@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -13,10 +12,9 @@ func AiConnect()  {
 	if err != nil {
 		log.Fatal("error load env")
 	}
-	Apikey= fmt.Sprintf("apikey=%s",
-	os.Getenv("API_KEY"),
-	)
-	if Apikey == "" {
+	val := os.Getenv("API_KEY")
+	if val == "" {
 		log.Fatal("GEMINI_API_KEY is not set in .env file")
 	} 
+	Apikey = val
 }

@@ -23,9 +23,9 @@ func NewSubjectRepository(db *sqlx.DB) SubjectRepository {
 	return &SubjectRepo{db: db}
 }
 
-func (r *SubjectRepo) FindAllSubject() []models.Subject {
+func (r *SubjectRepo) FindAllSubject() ([]models.Subject) {
 	var subject []models.Subject
-	 err := r.db.Select(&subject,"SELECT * FROM subject")
+	 err := r.db.Select(&subject,"SELECT id,name FROM subjects")
 
 	if err != nil {
 		log.Println("error query", err)
@@ -36,7 +36,7 @@ func (r *SubjectRepo) FindAllSubject() []models.Subject {
 
 func (r *SubjectRepo) SaveSubject(subject models.Subject) {
 	_, err := r.db.NamedExec(
-		`INSERT INTO subject(name) VALUES (:name)`,
+		`INSERT INTO subjects(name) VALUES (:name)`,
 		subject,
 	)
 	if err != nil {
@@ -45,11 +45,11 @@ func (r *SubjectRepo) SaveSubject(subject models.Subject) {
 }
 
 func (r *SubjectRepo) UpdateSubject(subjectId int, subject models.Subject) error {
-	_, err := r.db.Exec("UPDATE subject SET name=$1 WHERE id=$3", subject.SubjectName, subjectId)
+	_, err := r.db.Exec("UPDATE subjects SET name=$1 WHERE id=$2", subject.SubjectName, subjectId)
 	return err
 }
 
 func (r *SubjectRepo) DeleteSubject(subjectId int) error {
-	_, err := r.db.Exec("DELETE FROM subject WHERE id=$1", subjectId)
+	_, err := r.db.Exec("DELETE FROM subjects WHERE id=$1", subjectId)
 	return err
 }

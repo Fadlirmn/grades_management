@@ -19,21 +19,26 @@ func NewObjectiveHandler(s *services.ObjectiveService) *ObjectiveHandler {
 }
 
 func (h *ObjectiveHandler) GetObjectives(c *gin.Context) {
-	var assignment models.Objective
-	
-	c.JSON(http.StatusOK, assignment)
+	objective:= h.service.GetObjective()
+
+	if objective == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messege":"data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, objective)
 }
 func (h *ObjectiveHandler) CreateObjective(c *gin.Context) {
-	var assignment models.Objective
+	var objectives models.Objective
 
-	if err := c.ShouldBindJSON(&assignment); err != nil {
+	if err := c.ShouldBindJSON(&objectives); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid json: " + err.Error(),
 		})
 		return
 	}
 
-	h.service.CreateObjective(assignment)
+	h.service.CreateObjective(objectives)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"success": "Objective has been created",
@@ -58,15 +63,15 @@ func (h *ObjectiveHandler) UpdateObjective(c *gin.Context) {
 		return
 	}
 
-	var assignment models.Objective
-	if err := c.ShouldBindJSON(&assignment); err != nil {
+	var objectives models.Objective
+	if err := c.ShouldBindJSON(&objectives); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "invalid json",
 		})
 		return
 	}
 
-	err = h.service.UpdateObjective(id,assignment)
+	err = h.service.UpdateObjective(id,objectives)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),

@@ -19,9 +19,14 @@ func NewSubjectsHandler(s *services.SubjectService) *SubjectsHandler {
 }
 
 func (h *SubjectsHandler) GetSubjectss(c *gin.Context) {
-	var assignment models.Subject
-	
-	c.JSON(http.StatusOK, assignment)
+	subject:= h.service.GetSubject()
+
+	if subject == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messege":"data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, subject)
 }
 func (h *SubjectsHandler) CreateSubjects(c *gin.Context) {
 	var assignment models.Subject

@@ -19,9 +19,14 @@ func NewScoreHandler(s *services.ScoresService) *ScoreHandler {
 }
 
 func (h *ScoreHandler) GetScores(c *gin.Context) {
-	var assignment models.Scores
-	
-	c.JSON(http.StatusOK, assignment)
+	scores:= h.service.GetScores()
+
+	if scores == nil {
+		c.JSON(http.StatusNotFound, gin.H{"messege":"data not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, scores)
 }
 func (h *ScoreHandler) CreateScore(c *gin.Context) {
 	var assignment models.Scores
