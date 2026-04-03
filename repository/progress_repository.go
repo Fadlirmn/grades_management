@@ -18,6 +18,7 @@ type ProgressRepository interface {
 	FindPendingAnalysis(studentId int) ([]models.Progress, error)
 	UpdateRecommendation(progressId int, progress string) error
 	UpdateBatchRecommendation(result []models.AIRecommendation) error 
+	UpsertFromSheets(studentId, objId,week,score int,status string)error
 }
 
 type ProgressRepo struct {
@@ -142,4 +143,14 @@ func (r *ProgressRepo) UpdateBatchRecommendation(result []models.AIRecommendatio
 		}
 	}
 	return tx.Commit()
+}
+
+func (r *ProgressRepo) UpsertFromSheets(studentId, objId,week,score int,status string)error {
+	query:= `INSERT INTO progress(student_id,objective_id,week,final_score,status)
+			VALUES ($1,$2,$3,$4,$5)
+			ON CONFLICT (student_id,objective_id,week)
+			DO UPDATE SET final_score = EXCLUDED.final_score, status= EXCLUDED.status, recommendation = NULL`
+
+	_,err:= r.db.Exec(query,studentId,objId,week,score,status)
+	return err
 }

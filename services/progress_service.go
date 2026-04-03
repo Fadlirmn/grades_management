@@ -119,3 +119,7 @@ func (s *ProgressService)SaveAIResults(JsonStr string)error  {
 	log.Printf("has been updated: %d ",len(result))
 	return nil
 }
+
+func (s *ProgressService) UpsertFromSheets(studentId, objId, week, score int, status string) error {
+    return s.progressRepo.UpsertFromSheets(studentId, objId, week, score, status)
+}

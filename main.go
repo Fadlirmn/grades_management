@@ -20,6 +20,7 @@ func main()  {
 
 	db:=config.ConnectDb()
 	config.AiConnect()
+	config.SheetsConnect()
 	
 
 	assignRepo:= repository.NewAssignmentRepository(db)
@@ -35,8 +36,11 @@ func main()  {
 	scoreService:= services.NewScoresService(scoreRepo)
 	studentService:= services.NewStudentService(studentRepo)
 	subjectService:= services.NewSubjectService(subjectRepo)
+
+	sheetsServices:= services.NewSheetsService(config.SheetId,config.CredentialPath)
 	
 	geminiWorker := worker.NewGeminiWorker(progressService)
+	syncWorker := worker.NewSyncWorker(sheetsServices,progressService)
 
 
 	progressHandler := handlers.NewProgressHandler(progressService,geminiWorker)
@@ -53,6 +57,7 @@ func main()  {
 	c.AddFunc("*/5 * * * *", func() {
 		log.Println("Running weekly batch job...")
 		geminiWorker.ProccessScheduleBatch(context.Background())
+		syncWorker.SyncSheetsToDb()
 		
 	})
 
