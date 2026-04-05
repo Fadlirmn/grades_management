@@ -8,9 +8,3 @@ type User struct {
 	Role     string `db:"role" json:"role"`
 }
 
-type Token struct{
-	TokenId int 
-	Token string
-	UserID string
-	ExpiresAT int
-}
