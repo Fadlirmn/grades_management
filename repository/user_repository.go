@@ -43,7 +43,7 @@ func (r *userRepo) FindAll() []models.User {
 func (r *userRepo) FindByUsername(username string) (*models.User, error) {
     var user models.User
 
-    err := r.db.Get(&user, "SELECT * FROM users WHERE username = $1", username)
+    err := r.db.Get(&user, "SELECT id,username, name FROM users WHERE username = $1", username)
 
     if err != nil {
         return nil, err 
@@ -54,7 +54,7 @@ func (r *userRepo) FindByUsername(username string) (*models.User, error) {
 func (r *userRepo) FindByID(userID string) (*models.User, error) {
     var user models.User
 
-    err := r.db.Get(&user, "SELECT * FROM users WHERE id = $1", userID)
+    err := r.db.Get(&user, "SELECT id,username, name FROM users WHERE id = $1", userID)
 
     if err != nil {
         return nil, err 

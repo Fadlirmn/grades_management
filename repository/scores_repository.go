@@ -24,32 +24,32 @@ func NewScoreRepository(db *sqlx.DB) ScoreRepository {
 }
 
 func (r *ScoreRepo) FindAllScore() []models.Scores {
-	var score []models.Scores
-	 err := r.db.Select(&score,"SELECT * FROM score")
+	var scores []models.Scores
+	 err := r.db.Select(&scores,"SELECT * FROM scores")
 
 	if err != nil {
 		log.Println("error query", err)
 		return nil
 	}
-	return score
+	return scores
 }
 
-func (r *ScoreRepo) SaveScore(score models.Scores) {
+func (r *ScoreRepo) SaveScore(scores models.Scores) {
 	_, err := r.db.NamedExec(
-		`INSERT INTO score(student_id,assignment_id,score) VALUES (:student_id,:assignment_id,:score)`,
-		score,
+		`INSERT INTO scores(student_id,assignment_id,scores) VALUES (:student_id,:assignment_id,:scores)`,
+		scores,
 	)
 	if err != nil {
 		log.Println("fail Add Score", err)
 	}
 }
 
-func (r *ScoreRepo) UpdateScore(scoreId int, score models.Scores) error {
-	_, err := r.db.Exec("UPDATE score SET student_id=$1, assignment_id=$2, score=$3 WHERE id=$3", score.StudentId, score.AssignmentId, score.Score, scoreId)
+func (r *ScoreRepo) UpdateScore(scoresId int, scores models.Scores) error {
+	_, err := r.db.Exec("UPDATE scores SET student_id=$1, assignment_id=$2, scores=$3 WHERE id=$3", scores.StudentId, scores.AssignmentId, scores.Score, scoresId)
 	return err
 }
 
-func (r *ScoreRepo) DeleteScore(scoreId int) error {
-	_, err := r.db.Exec("DELETE FROM score WHERE id=$1", scoreId)
+func (r *ScoreRepo) DeleteScore(scoresId int) error {
+	_, err := r.db.Exec("DELETE FROM scores WHERE id=$1", scoresId)
 	return err
 }
