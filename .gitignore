@@ -28,8 +28,11 @@ go.work.sum
 .env
 
 
-credential.json
+credentials.json
+
+.json
 
 # Editor/IDE
 # .idea/
 # .vscode/
+credentials.json
