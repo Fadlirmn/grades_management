@@ -30,26 +30,11 @@
           <h2 class="text-h4 font-weight-bold text-center text-high-emphasis mb-1">Sign In</h2>
           <p class="text-medium-emphasis text-body-2 text-center mb-6">Enter your credentials to access your account</p>
 
-          <!-- Role Selection -->
-          <div class="d-flex gap-2 mb-6">
-            <v-btn
-              v-for="r in roles"
-              :key="r.value"
-              :variant="selectedRole === r.value ? 'flat' : 'outlined'"
-              :color="selectedRole === r.value ? 'primary' : 'grey-darken-1'"
-              :prepend-icon="r.icon"
-              rounded="lg"
-              class="text-none font-weight-bold flex-1"
-              size="small"
-              @click="selectRole(r.value)"
-            >{{ r.label }}</v-btn>
-          </div>
-
           <v-form @submit.prevent="handleLogin">
             <label class="text-body-2 font-weight-bold text-high-emphasis d-block mb-2">Email or Username</label>
             <v-text-field
               v-model="email"
-              :placeholder="emailPlaceholder"
+              placeholder="your@email.com"
               append-inner-icon="mdi-at"
               variant="solo"
               density="comfortable"
@@ -102,7 +87,7 @@
           </v-form>
 
           <div class="text-center text-body-2 text-medium-emphasis bg-grey-lighten-3 pa-4 rounded-xl">
-            Don't have an account? <a href="#" class="text-primary font-weight-bold text-decoration-none">Sign Up</a> or Contact administrator
+            Don't have an account? <router-link to="/register" class="text-primary font-weight-bold text-decoration-none">Sign Up</router-link> or Contact administrator
           </div>
         </div>
       </v-col>
@@ -111,47 +96,17 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import type { UserRole } from '@/types'
 
 const router = useRouter()
 const authStore = useAuthStore()
 
-const email = ref<string>('')
-const password = ref<string>('password')
+const email = ref('')
+const password = ref('')
 const showPass = ref(false)
 const keepLogged = ref(false)
-const selectedRole = ref<UserRole>('teacher')
-
-interface RoleOption {
-  value: UserRole
-  label: string
-  icon: string
-  email: string
-}
-
-const roles: RoleOption[] = [
-  { value: 'admin', label: 'Admin', icon: 'mdi-shield-crown', email: 'admin@edu.com' },
-  { value: 'teacher', label: 'Teacher', icon: 'mdi-human-male-board', email: 'teacher@edu.com' },
-  { value: 'student', label: 'Student', icon: 'mdi-school', email: 'student@edu.com' },
-  { value: 'parent', label: 'Parent', icon: 'mdi-account-child', email: 'parent@edu.com' },
-]
-
-const emailPlaceholder = computed(() => {
-  const found = roles.find(r => r.value === selectedRole.value)
-  return found?.email || 'teacher@edu.com'
-})
-
-const selectRole = (role: UserRole): void => {
-  selectedRole.value = role
-  const found = roles.find(r => r.value === role)
-  if (found) email.value = found.email
-}
-
-// Set default
-email.value = 'teacher@edu.com'
 
 const handleLogin = async (): Promise<void> => {
   try {

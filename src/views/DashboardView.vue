@@ -188,6 +188,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useTheme } from 'vuetify'
 import { useAuthStore } from '@/stores/auth'
 import { fetchDashboardStats } from '@/api/grades'
+import apiClient from '@/api/client'
 import type { DashboardStat } from '@/types'
 import Chart from 'chart.js/auto'
 
@@ -221,8 +222,91 @@ const filteredStats = computed(() => {
   return stats.value
 })
 
+// ─── Reactive data (API-first, mock fallback) ────────────
+const topSubjects = ref([
+  { name: 'Calculus II', score: 94.2 },
+  { name: 'World Literature', score: 88.5 },
+  { name: 'Digital Arts', score: 82.1 },
+  { name: 'Physics 101', score: 76.4 },
+])
+
+const assignments = ref([
+  { name: 'Mid-Term Calculus Essay', category: 'Mathematics Tier A', due: 'Oct 24, 2023', status: 'In Progress', statusColor: 'primary', submissions: '88/124', icon: 'mdi-file-document', iconColor: 'tertiary' },
+  { name: 'Physics Lab Report: Optics', category: 'Natural Sciences', due: 'Oct 26, 2023', status: 'MENGUASAI', statusColor: 'success', submissions: '112/124', icon: 'mdi-flask', iconColor: 'primary' },
+  { name: 'Digital Renaissance Portfolio', category: 'Arts & Design', due: 'Oct 30, 2023', status: 'BELUM', statusColor: 'error', submissions: '12/124', icon: 'mdi-palette', iconColor: 'purple' },
+])
+
+const studentGrades = ref([
+  { subject: 'Advanced Calculus', objective: 'Integration Techniques', score: 94, status: 'MENGUASAI', chipColor: 'primary' },
+  { subject: 'Computer Science II', objective: 'Algorithm Complexity', score: 98, status: 'MENGUASAI', chipColor: 'primary' },
+  { subject: 'World History', objective: 'Cold War Analysis', score: 72, status: 'CUKUP', chipColor: 'warning' },
+])
+
+const deadlines = ref([
+  { name: 'Calculus Problem Set #12', due: 'Oct 24, 2023', daysLeft: '2 days', urgency: 'error', icon: 'mdi-calculator', color: 'primary' },
+  { name: 'CS Project Submission', due: 'Oct 28, 2023', daysLeft: '6 days', urgency: 'warning', icon: 'mdi-code-braces', color: 'tertiary' },
+  { name: 'History Essay Draft', due: 'Nov 1, 2023', daysLeft: '10 days', urgency: 'success', icon: 'mdi-book-open-variant', color: 'success' },
+])
+
+const childSubjects = ref([
+  { name: 'Advanced Calculus', grade: 'A+' },
+  { name: 'Computer Science II', grade: 'A' },
+  { name: 'World History', grade: 'B+' },
+  { name: 'English Literature', grade: 'B' },
+])
+
+const adminMetrics = ref([
+  { label: 'Faculty Active', value: '42', icon: 'mdi-human-male-board', bg: 'blue-lighten-4', color: 'primary', pct: 84 },
+  { label: 'System Uptime', value: '99.8%', icon: 'mdi-server', bg: 'green-lighten-4', color: 'success', pct: 99.8 },
+  { label: 'Pending Reviews', value: '18', icon: 'mdi-clock-alert', bg: 'orange-lighten-4', color: 'tertiary', pct: 36 },
+])
+
+// ─── Load from API (fallback to mock already set above) ──
 onMounted(async () => {
+  // Stats
   stats.value = await fetchDashboardStats()
+
+  // Top Subjects
+  try {
+    const { data } = await apiClient.get('/dashboard/top-subjects')
+    if (data?.length) topSubjects.value = data
+  } catch { /* keep mock */ }
+
+  // Assignments
+  try {
+    const { data } = await apiClient.get('/dashboard/assignments')
+    if (data?.length) assignments.value = data
+  } catch { /* keep mock */ }
+
+  // Student grades (student role)
+  if (authStore.isStudent) {
+    try {
+      const { data } = await apiClient.get('/dashboard/my-grades')
+      if (data?.length) studentGrades.value = data
+    } catch { /* keep mock */ }
+
+    try {
+      const { data } = await apiClient.get('/dashboard/my-deadlines')
+      if (data?.length) deadlines.value = data
+    } catch { /* keep mock */ }
+  }
+
+  // Parent child subjects
+  if (authStore.isParent) {
+    try {
+      const { data } = await apiClient.get('/dashboard/child-subjects')
+      if (data?.length) childSubjects.value = data
+    } catch { /* keep mock */ }
+  }
+
+  // Admin metrics
+  if (authStore.isAdmin) {
+    try {
+      const { data } = await apiClient.get('/dashboard/admin-metrics')
+      if (data?.length) adminMetrics.value = data
+    } catch { /* keep mock */ }
+  }
+
   createChart()
 })
 
@@ -256,46 +340,5 @@ const createChart = (): void => {
 }
 
 watch(isDark, () => setTimeout(createChart, 100))
-
-// ─── Mock Sub-data ───────────────────────────────────────
-const topSubjects = [
-  { name: 'Calculus II', score: 94.2 },
-  { name: 'World Literature', score: 88.5 },
-  { name: 'Digital Arts', score: 82.1 },
-  { name: 'Physics 101', score: 76.4 },
-]
-
-const assignments = [
-  { name: 'Mid-Term Calculus Essay', category: 'Mathematics Tier A', due: 'Oct 24, 2023', status: 'In Progress', statusColor: 'primary', submissions: '88/124', icon: 'mdi-file-document', iconColor: 'tertiary' },
-  { name: 'Physics Lab Report: Optics', category: 'Natural Sciences', due: 'Oct 26, 2023', status: 'MENGUASAI', statusColor: 'success', submissions: '112/124', icon: 'mdi-flask', iconColor: 'primary' },
-  { name: 'Digital Renaissance Portfolio', category: 'Arts & Design', due: 'Oct 30, 2023', status: 'BELUM', statusColor: 'error', submissions: '12/124', icon: 'mdi-palette', iconColor: 'purple' },
-]
-
-// Student data
-const studentGrades = [
-  { subject: 'Advanced Calculus', objective: 'Integration Techniques', score: 94, status: 'MENGUASAI', chipColor: 'primary' },
-  { subject: 'Computer Science II', objective: 'Algorithm Complexity', score: 98, status: 'MENGUASAI', chipColor: 'primary' },
-  { subject: 'World History', objective: 'Cold War Analysis', score: 72, status: 'CUKUP', chipColor: 'warning' },
-]
-
-const deadlines = [
-  { name: 'Calculus Problem Set #12', due: 'Oct 24, 2023', daysLeft: '2 days', urgency: 'error', icon: 'mdi-calculator', color: 'primary' },
-  { name: 'CS Project Submission', due: 'Oct 28, 2023', daysLeft: '6 days', urgency: 'warning', icon: 'mdi-code-braces', color: 'tertiary' },
-  { name: 'History Essay Draft', due: 'Nov 1, 2023', daysLeft: '10 days', urgency: 'success', icon: 'mdi-book-open-variant', color: 'success' },
-]
-
-// Parent data
-const childSubjects = [
-  { name: 'Advanced Calculus', grade: 'A+' },
-  { name: 'Computer Science II', grade: 'A' },
-  { name: 'World History', grade: 'B+' },
-  { name: 'English Literature', grade: 'B' },
-]
-
-// Admin data
-const adminMetrics = [
-  { label: 'Faculty Active', value: '42', icon: 'mdi-human-male-board', bg: 'blue-lighten-4', color: 'primary', pct: 84 },
-  { label: 'System Uptime', value: '99.8%', icon: 'mdi-server', bg: 'green-lighten-4', color: 'success', pct: 99.8 },
-  { label: 'Pending Reviews', value: '18', icon: 'mdi-clock-alert', bg: 'orange-lighten-4', color: 'tertiary', pct: 36 },
-]
 </script>
+

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import type { UserRole } from '@/types'
 import LoginView from '@/views/LoginView.vue'
+import RegistrationView from '@/views/RegistrationView.vue'
 import DashboardLayout from '@/layouts/DashboardLayout.vue'
 import DashboardView from '@/views/DashboardView.vue'
 import StudentDetailView from '@/views/StudentDetailView.vue'
@@ -22,6 +23,7 @@ declare module 'vue-router' {
 const routes: RouteRecordRaw[] = [
   { path: '/', redirect: '/login' },
   { path: '/login', name: 'Login', component: LoginView },
+  { path: '/register', name: 'Register', component: RegistrationView },
   {
     path: '/dashboard',
     component: DashboardLayout,
@@ -109,8 +111,8 @@ router.beforeEach((to, _from, next) => {
     }
   }
 
-  // Redirect authenticated users away from login
-  if (to.path === '/login' && token && userJson) {
+  // Redirect authenticated users away from login/register
+  if ((to.path === '/login' || to.path === '/register') && token && userJson) {
     return next('/dashboard')
   }
 
