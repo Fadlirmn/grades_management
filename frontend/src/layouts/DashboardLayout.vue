@@ -46,24 +46,6 @@
           </div>
           <p class="text-body-2 ma-0 text-medium-emphasis" style="line-height:1.5;">Class performance is up 12% this week in Mathematics. Review Section 4 for details.</p>
         </div>
-
-        <v-list-item
-          class="cursor-pointer border-t-thin"
-          @click="$router.push('/dashboard/profile')"
-        >
-          <template v-slot:prepend>
-            <v-avatar size="36">
-              <v-img :src="authStore.userAvatar"></v-img>
-            </v-avatar>
-          </template>
-          <v-list-item-title class="text-body-2 font-weight-bold text-high-emphasis">{{ authStore.userName }}</v-list-item-title>
-          <v-list-item-subtitle class="text-caption text-medium-emphasis text-capitalize">{{ authStore.userRole }}</v-list-item-subtitle>
-          <template v-slot:append>
-            <v-btn icon variant="text" size="x-small" @click.stop="handleLogout" title="Logout">
-              <v-icon size="18" color="error">mdi-logout</v-icon>
-            </v-btn>
-          </template>
-        </v-list-item>
       </template>
     </v-navigation-drawer>
 
