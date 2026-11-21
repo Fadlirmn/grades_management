@@ -5,6 +5,7 @@ import UnoCSS from 'unocss/vite'
 import path from 'path'
 
 export default defineConfig({
+  base: process.env.GH_PAGES ? '/grades_management/' : '/',
   plugins: [
     vue(),
     vuetify({ autoImport: true }),

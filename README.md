@@ -75,7 +75,7 @@ A cron job runs hourly: syncs grades from Google Sheets into Postgres, then batc
 **Backend**
 ```bash
 cd backend
-cp .env.example .env   # DB_URL, GEMINI_API_KEY, SHEETS_ID, GOOGLE_CREDENTIALS_PATH, JWT_SECRET
+cp .env.example .env   # DB_HOST/PORT/USER/PASSWORD/NAME, API_KEY (Gemini), SHEETS_ID, GOOGLE_CREDENTIALS_PATH
 go mod tidy
 go run main.go         # listens on :8080
 ```
@@ -90,8 +90,16 @@ npm run build            # production build -> dist/
 
 ## Deploying
 
-- **Frontend**: static build, deploy to Vercel/Cloudflare Pages/GitHub Pages with **root directory = `frontend`**. GitHub Pages project pages need `base: '/<repo-name>/'` added to `vite.config.js`; Vercel/Cloudflare/Netlify don't.
-- **Backend**: needs a host that keeps a persistent process running (the cron worker runs in-process) — e.g. Render, Railway, Fly.io, or a VPS. Not deployable to a static/serverless-only platform.
+- **Frontend only (demo/portfolio)**: static build, deploy to Vercel/Cloudflare Pages/GitHub Pages with **root directory = `frontend`**.
+  - **GitHub Pages**: a workflow is already set up (`.github/workflows/deploy-pages.yml`) — it builds `frontend/` with the right base path and deploys on every push to `main`. One-time setup: in the repo's Settings → Pages, set **Source: GitHub Actions**. Site then lives at `https://<user>.github.io/grades_management/`.
+  - Vercel/Cloudflare/Netlify don't need a base path — leave `vite.config.js`'s `base` as default (`/`).
+- **Full stack on a VPS**: `docker-compose.yml` at repo root runs Postgres + backend + frontend (nginx) together.
+  ```bash
+  cp .env.example .env   # fill in DB_PASSWORD, API_KEY, SHEETS_ID, VITE_API_URL (your VPS's public address)
+  # place your Google service account file at backend/credentials.json
+  docker compose up -d --build
+  ```
+  Backend needs a host that keeps a persistent process running (the cron worker runs in-process) — a VPS, or Render/Railway/Fly.io. Not deployable to a static/serverless-only platform.
 
 ## Roles
 
