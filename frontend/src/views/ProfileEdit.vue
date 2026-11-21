@@ -5,8 +5,8 @@
       <p class="text-body-2 mt-1 text-medium-emphasis">Update your personal information and preferences.</p>
     </div>
 
-    <div class="grid grid-cols-4 gap-5 gap-md-6">
-      <v-card color="surface" variant="flat" rounded="xl" class="pa-7 col-span-1 border-thin">
+    <div class="grid grid-cols-1 gap-5">
+      <v-card color="surface" variant="flat" rounded="xl" class="pa-7 border-thin">
         <div class="d-flex flex-column align-center mb-6 pb-6 border-b-thin">
           <v-avatar size="100" class="mb-4">
             <v-img :src="authStore.userAvatar"></v-img>
@@ -36,9 +36,9 @@
         </div>
       </v-card>
 
-      <v-card color="surface" variant="flat" rounded="xl" class="pa-7 col-span-3 border-thin">
+      <v-card color="surface" variant="flat" rounded="xl" class="pa-7 border-thin">
         <h3 class="text-body-1 font-weight-bold text-high-emphasis mb-4">Personal Information</h3>
-        <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="grid grid-cols-1 gap-4 mb-8">
           <div>
             <label class="text-body-2 font-weight-bold text-high-emphasis d-block mb-2">Full Name</label>
             <v-text-field v-model="form.name" variant="solo" density="comfortable" bg-color="surface-variant" flat hide-details rounded="lg"></v-text-field>
@@ -58,7 +58,7 @@
         </div>
 
         <h3 class="text-body-1 font-weight-bold text-high-emphasis mb-4">Security</h3>
-        <div class="grid grid-cols-2 gap-4 mb-8">
+        <div class="grid grid-cols-1 gap-4 mb-8">
           <div>
             <label class="text-body-2 font-weight-bold text-high-emphasis d-block mb-2">Current Password</label>
             <v-text-field v-model="form.currentPassword" type="password" variant="solo" density="comfortable" bg-color="surface-variant" flat hide-details rounded="lg"></v-text-field>

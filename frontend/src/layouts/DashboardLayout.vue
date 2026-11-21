@@ -109,6 +109,10 @@
             <v-img :src="authStore.userAvatar"></v-img>
           </v-avatar>
         </div>
+
+        <v-btn icon variant="text" @click.stop="handleLogout" title="Logout">
+          <v-icon color="error">mdi-logout</v-icon>
+        </v-btn>
       </v-app-bar>
 
       <!-- Router Content -->

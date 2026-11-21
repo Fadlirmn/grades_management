@@ -2,7 +2,7 @@
   <v-container fluid class="pa-0 h-screen">
     <v-row no-gutters class="h-100">
       <!-- Left Blue Panel -->
-      <v-col cols="6" class="hidden-sm-and-down bg-blue-darken-1 d-flex align-center justify-center position-relative overflow-hidden">
+      <v-col cols="6" class="d-none d-md-flex bg-blue-darken-1 align-center justify-center position-relative overflow-hidden">
         <div class="position-absolute w-100 h-100" style="background: radial-gradient(circle at 30% 60%, rgba(59,130,246,0.5) 0%, transparent 50%), radial-gradient(circle at 70% 30%, rgba(30,64,175,0.6) 0%, transparent 50%);"></div>
         <div class="position-relative z-1 text-center pa-8" style="max-width:400px;">
           <v-icon size="64" color="white" class="mb-6">mdi-book-open-page-variant</v-icon>
