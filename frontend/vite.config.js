@@ -5,6 +5,7 @@ import UnoCSS from 'unocss/vite'
 import path from 'path'
 
 export default defineConfig({
+  // GH_PAGES=true set by .github/workflows/deploy-pages.yml for the project-page base path
   base: process.env.GH_PAGES ? '/grades_management/' : '/',
   plugins: [
     vue(),
