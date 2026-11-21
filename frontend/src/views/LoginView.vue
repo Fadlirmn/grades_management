@@ -86,9 +86,15 @@
             </v-btn>
           </v-form>
 
-          <div class="text-center text-body-2 text-medium-emphasis bg-grey-lighten-3 pa-4 rounded-xl">
+          <div class="text-center text-body-2 text-medium-emphasis bg-grey-lighten-3 pa-4 rounded-xl mb-4">
             Don't have an account? <router-link to="/register" class="text-primary font-weight-bold text-decoration-none">Sign Up</router-link> or Contact administrator
           </div>
+
+          <v-alert type="info" variant="tonal" density="compact" rounded="lg" class="text-body-2">
+            <strong>Demo mode:</strong> any password works. Try
+            <code>admin@edu.com</code>, <code>teacher@edu.com</code>,
+            <code>student@edu.com</code>, or <code>parent@edu.com</code>.
+          </v-alert>
         </div>
       </v-col>
     </v-row>
